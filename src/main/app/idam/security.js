@@ -94,6 +94,13 @@ function getUserDetails(self, securityCookie) {
     .set('Authorization', "Bearer " + securityCookie);
 }
 
+function invalidatesUserToken(self, securityCookie) {
+  return request
+    .get(self.opts.apiUrl + "/o/endSession")
+    .query({ id_token_hint: securityCookie })
+    .set('Accept', 'application/json');
+}
+
 function storeCookie(req, res, token) {
   req.authToken = token;
 
@@ -126,9 +133,11 @@ Security.prototype.logout = function () {
     res.clearCookie(REDIRECT_COOKIE);
 
     if (token) {
-      res.redirect(self.opts.loginUrl + "/logout?jwt=" + token);
+      invalidatesUserToken.end(() => {
+          res.redirect(self.opts.apiUrl + "/logout");
+        });
     } else {
-      res.redirect(self.opts.loginUrl + "/logout");
+      res.redirect(self.opts.apiUrl + "/logout");
     }
   }
 
