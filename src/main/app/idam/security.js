@@ -8,7 +8,7 @@ const UUID = require("uuid/v4");
 const SECURITY_COOKIE = '__auth-token';
 const REDIRECT_COOKIE = '__redirect';
 
-const ACCESS_TOKEN_OAUTH2 = 'access_token';
+//const ACCESS_TOKEN_OAUTH2 = 'access_token';
 
 function Security(options) {
   this.opts = options || {};
@@ -25,6 +25,7 @@ function addOAuth2Parameters(url, state, self, req) {
   url.query.response_type = "code";
   url.query.state = state;
   url.query.client_id = self.opts.clientId;
+  url.query.scope = 'openid profile roles';
   url.query.redirect_uri = req.protocol + "://" + req.get('host') + self.opts.redirectUri;
 
 }
@@ -74,13 +75,14 @@ function authorize(roles, res, next, self) {
 
 function getTokenFromCode(self, req) {
 
-  var url = URL.parse(self.opts.apiUrl + "/oauth2/token", true);
+  var url = URL.parse(self.opts.apiUrl + "/o/token", true);
 
   return request.post(url.format())
-    .auth(self.opts.clientId, self.opts.clientSecret)
     .set('Accept', 'application/json')
     .set('Content-Type', 'application/x-www-form-urlencoded')
     .type('form')
+    .send({ client_id: self.opts.clientId })
+    .send({ client_secret: self.opts.clientSecret })
     .send({"grant_type": 'authorization_code'})
     .send({"code": req.query.code})
     .send({"redirect_uri": req.protocol + "://" + req.get('host') + self.opts.redirectUri});
@@ -331,7 +333,7 @@ Security.prototype.OAuth2CallbackEndpoint = function () {
       }
 
       /* We store it in a session cookie */
-      storeCookie(req, res, response.body[ACCESS_TOKEN_OAUTH2]);
+      storeCookie(req, res, response.body);
 
       /* We delete redirect cookie */
       res.clearCookie(REDIRECT_COOKIE);
