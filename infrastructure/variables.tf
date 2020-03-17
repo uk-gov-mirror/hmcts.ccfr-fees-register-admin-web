@@ -35,7 +35,7 @@ variable "idam_api_url" {
 }
 
 variable "authentication_web_url" {
-  default = "https://idam.preprod.ccidam.reform.hmcts.net/o/authorize"
+  default = "https://idam.preprod.ccidam.reform.hmcts.net"
 }
 
 variable "vault_section" {
