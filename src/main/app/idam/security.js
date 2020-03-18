@@ -134,10 +134,10 @@ Security.prototype.logout = function () {
 
     if (token) {
       invalidatesUserToken.end(() => {
-          res.redirect(self.opts.apiUrl + "/logout");
+          res.redirect(self.opts.loginUrl + "/logout");
         });
     } else {
-      res.redirect(self.opts.apiUrl + "/logout");
+      res.redirect(self.opts.loginUrl + "/logout");
     }
   }
 
