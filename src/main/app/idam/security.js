@@ -136,16 +136,11 @@ Security.prototype.logout = function () {
 
       res.clearCookie(SECURITY_COOKIE);
       res.clearCookie(REDIRECT_COOKIE);
-      res.cookie('err', JSON.stringify(err), {httpOnly: true});
 
       if (token) {
-        res.cookie('token', JSON.stringify(token), {httpOnly: true});
-        res.cookie('url', JSON.stringify(self.opts.loginUrl), {httpOnly: true});
-        res.redirect(self.opts.loginUrl + `/logout?jwt=${token}`);
+        res.redirect(`${self.opts.apiUrl}/login/logout?jwt=${token}`);
       } else {
-        res.cookie('token', JSON.stringify(token), {httpOnly: true});
-        res.cookie('url', JSON.stringify(self.opts.loginUrl), {httpOnly: true});
-        res.redirect(self.opts.loginUrl + "/logout");
+        res.redirect(`${self.opts.apiUrl}/login/logout`);
       }
     });
   }
