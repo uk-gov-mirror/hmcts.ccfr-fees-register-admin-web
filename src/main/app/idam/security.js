@@ -128,17 +128,20 @@ Security.prototype.logout = function () {
   return function (req, res, next) {
 
     var token = req.cookies[SECURITY_COOKIE];
+    invalidatesUserToken(self, token).end( err => {
 
-    res.clearCookie(SECURITY_COOKIE);
-    res.clearCookie(REDIRECT_COOKIE);
+      if (err) {
+        Logger.getLogger('FEE REGISTER: security.js').error(err);
+      }
 
-    if (token) {
-      invalidatesUserToken.end(() => {
-          res.redirect(self.opts.loginUrl + "/logout");
-        });
-    } else {
-      res.redirect(self.opts.loginUrl + "/logout");
-    }
+      res.clearCookie(SECURITY_COOKIE);
+      res.clearCookie(REDIRECT_COOKIE);
+      if (token) {
+        res.redirect(self.opts.loginUrl + `/logout?jwt=${token}`);
+      } else {
+        res.redirect(self.opts.loginUrl + "/logout");
+      }
+    });
   }
 
 };
