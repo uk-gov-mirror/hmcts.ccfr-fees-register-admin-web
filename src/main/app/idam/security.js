@@ -138,9 +138,9 @@ Security.prototype.logout = function () {
       res.clearCookie(REDIRECT_COOKIE);
 
       if (token) {
-        res.redirect(`${self.opts.apiUrl}/login/logout?jwt=${token}`);
+        res.redirect(`${self.opts.webUrl}/login/logout?jwt=${token}`);
       } else {
-        res.redirect(`${self.opts.apiUrl}/login/logout`);
+        res.redirect(`${self.opts.webUrl}/login/logout`);
       }
     });
   }
