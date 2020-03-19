@@ -6,9 +6,12 @@ const URL = require("url");
 const UUID = require("uuid/v4");
 
 const SECURITY_COOKIE = '__auth-token';
+const SECURITY_COOKIE_ID = '__id-token';
 const REDIRECT_COOKIE = '__redirect';
 
 const ACCESS_TOKEN_OAUTH2 = 'access_token';
+const ID_TOKEN_OAUTH2 = 'id_token';
+
 
 function Security(options) {
   this.opts = options || {};
@@ -101,13 +104,13 @@ function invalidatesUserToken(self, securityCookie) {
     .set('Accept', 'application/json');
 }
 
-function storeCookie(req, res, token) {
+function storeCookie(req, res, token, cookieName) {
   req.authToken = token;
 
   if (req.protocol === "https") { /* SECURE */
-    res.cookie(SECURITY_COOKIE, req.authToken, {secure: true, httpOnly: true});
+    res.cookie(cookieName, req.authToken, {secure: true, httpOnly: true});
   } else {
-    res.cookie(SECURITY_COOKIE, req.authToken, {httpOnly: true});
+    res.cookie(cookieName, req.authToken, {httpOnly: true});
   }
 }
 
@@ -127,7 +130,7 @@ Security.prototype.logout = function () {
 // eslint-disable-next-line no-unused-vars
   return function (req, res, next) {
 
-    var token = req.cookies[SECURITY_COOKIE];
+    var token = req.cookies[SECURITY_COOKIE_ID];
     invalidatesUserToken(self, token).end( err => {
 
       if (err) {
@@ -135,6 +138,7 @@ Security.prototype.logout = function () {
       }
 
       res.clearCookie(SECURITY_COOKIE);
+      res.clearCookie(SECURITY_COOKIE_ID);
       res.clearCookie(REDIRECT_COOKIE);
 
       if (token) {
@@ -346,7 +350,8 @@ Security.prototype.OAuth2CallbackEndpoint = function () {
       }
 
       /* We store it in a session cookie */
-      storeCookie(req, res, response.body[ACCESS_TOKEN_OAUTH2]);
+      storeCookie(req, res, response.body[ACCESS_TOKEN_OAUTH2], SECURITY_COOKIE);
+      storeCookie(req, res, response.body[ID_TOKEN_OAUTH2], SECURITY_COOKIE_ID);
 
       /* We delete redirect cookie */
       res.clearCookie(REDIRECT_COOKIE);
