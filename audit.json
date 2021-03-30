@@ -27,5 +27,6 @@
 "10010_Cookie No HttpOnly Flag_https://fees-register.aat.platform.hmcts.net_GET": "ignore",
 "10011_Cookie Without Secure Flag_https://fees-register.aat.platform.hmcts.net/_GET": "ignore",
 "10011_Cookie Without Secure Flag_https://fees-register.aat.platform.hmcts.net_GET": "ignore",
-"10011_Cookie Without Secure Flag_https://fees-register.aat.platform.hmcts.net/robots.txt_GET": "ignore"
+"10011_Cookie Without Secure Flag_https://fees-register.aat.platform.hmcts.net/robots.txt_GET": "ignore",
+"10096_Timestamp Disclosure - Unix_https://fees-register.aat.platform.hmcts.net/sitemap.xml_GET": "ignore" 
 }
